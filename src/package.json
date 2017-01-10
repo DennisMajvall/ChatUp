@@ -1,0 +1,18 @@
+{
+  "name": "chat-up",
+  "version": "0.0.1",
+  "description": "A minimalistic chatting platform.",
+  "dependencies": {
+    "body-parser": "*",
+    "bootstrap": "^3.3.7",
+    "compression": "*",
+    "cookie-parser": "*",
+    "debug": "*",
+    "express": "*",
+    "gulp": "*",
+    "gulp-clean-css": "*",
+    "gulp-less": "*",
+    "serve-favicon": "*"
+  }
+}
+ 
