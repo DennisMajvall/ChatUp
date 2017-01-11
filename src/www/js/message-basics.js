@@ -15,22 +15,26 @@ $(function() {
 				'text': inputMsg
 				// we could send more parameters here.
 			},
-			function(data, error) {
+			function(messages, error) {
 		}, 'json');
 	}
 
 	function onReceiveMessages(messages) {
-		console.log(data);
+		console.log(messages);
 
-		if (data.length) {
-			lastReadMsgTime = data[data.length-1].time;
+		if (messages.length) {
+			lastReadMsgTime = messages[messages.length-1].time;
 		}
+		
+		$('body').append(
+			'<div class="the-messages">' +
+				'<p>' + messages.text + '</p>' +
+			'</div>');
 	}
 
 	function waitForMessages() {
-		$.getJSON('/read-messages/' + lastReadMsgTime, function(data) {
-			onReceiveMessages(data);
-
+		$.getJSON('/read-messages/' + lastReadMsgTime, function(messages) {
+			onReceiveMessages(messages);
 			// Wait for new messages.
 			waitForMessages();
 		});
