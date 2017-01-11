@@ -4,9 +4,11 @@ $(function() {
 
 	function onSendMessage() {
 		var inputMsg = inputTextbox.val();
-		$.getJSON('/send-message/' + inputMsg, function(data) {
+
+		$.post('/send-message', { 'text': inputMsg }, function(data, error) {
 			console.log(data);
-		});
+			onReadMessage();
+		}, 'json');
 	}
 
 	function onReadMessage() {

@@ -13,27 +13,9 @@ module.exports = class Server {
   }
 
   setup() {
-  	// Set up all routes used by this application
-  	if (m.routing) {
-  		m.routing(this.app);
-  	}
-
-	// Send a new message
-	this.app.get('/send-message/:message',function(req,res){
-		console.log('it\'s working');
-		res.json({ok:"messaged recieved"});
-	});
-
 
     // tell express to use middleware to parse JSON
     this.app.use(m.bodyparser.json());
-
-    // declare a webroot
-    this.app.use(
-      m.express.static(
-        m.path.join(g.settings.appRoot, this.settings.webroot)
-      )
-    );
 
     // compress all files using gzip
     this.app.use(m.compression());
@@ -44,6 +26,18 @@ module.exports = class Server {
     // parse all urlencoded request body data
     // for example from "standard" HTML forms
     this.app.use(m.bodyparser.urlencoded({extended: false}));
+
+  	// Set up all routes used by this application
+  	if (m.routing) {
+  		m.routing(this.app);
+  	}
+
+    // declare a webroot
+    this.app.use(
+      m.express.static(
+        m.path.join(g.settings.appRoot, this.settings.webroot)
+      )
+    );
 
     // listen on port 3000
     var me = this;
