@@ -1,11 +1,18 @@
 $(function() {
 	var sendButton = $('input[name="send-message"]');
 	var inputTextbox = $('input[name="input"]');
+	var messagesDiv = $('.messages');
 	var lastReadMsgTime = 0;
 
 	waitForMessages();
 
 	sendButton.on('click', onSendMessage);
+
+	inputTextbox.keyup(function(event){
+    	if(event.keyCode == 13){
+			onSendMessage();
+		}
+	});
 
 	function onSendMessage() {
 		var inputMsg = inputTextbox.val();
@@ -20,8 +27,8 @@ $(function() {
 	}
 
 	function onReceiveMessage(message) {
-		$('body').append(
-			'<div class="the-messages">' +
+		messagesDiv.append(
+			'<div class="message">' +
 				'<p>' + message.text + '</p>' +
 			'</div>'
 		);
@@ -36,6 +43,8 @@ $(function() {
 					onReceiveMessage(msg);
 					lastReadMsgTime = msg.time;
 				});
+
+				window.scrollTo(0, 9999999);
 
 				// Update the lastReadMsgTime
 				lastReadMsgTime = messages[messages.length-1].time;
