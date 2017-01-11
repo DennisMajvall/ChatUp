@@ -13,8 +13,21 @@ module.exports = class Server {
   }
 
   setup() {
+  	// Set up all routes used by this application
+  	if (m.routing) {
+  		m.routing(this.app);
+  	}
+
+	// Send a new message
+	this.app.get('/send-message/:message',function(req,res){
+		console.log('it\'s working');
+		res.json({ok:"messaged recieved"});
+	});
+
+
     // tell express to use middleware to parse JSON
     this.app.use(m.bodyparser.json());
+
     // declare a webroot
     this.app.use(
       m.express.static(

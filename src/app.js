@@ -15,7 +15,8 @@ g = {}; // all global variables (ex. settings)
   "gulp-less",
   "gulp-clean-css",
   "./settingsConstr",
-  "./classLoader"
+  "./classLoader",
+  "./routing"
 ].forEach(function(x){
   // store required modules in "m"
   m[x.replace(/\W/g,'')] = require(x);
