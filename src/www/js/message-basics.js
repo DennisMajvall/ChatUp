@@ -19,22 +19,28 @@ $(function() {
 		}, 'json');
 	}
 
-	function onReceiveMessages(messages) {
-		console.log(messages);
-
-		if (messages.length) {
-			lastReadMsgTime = messages[messages.length-1].time;
-		}
-		
+	function onReceiveMessage(message) {
 		$('body').append(
 			'<div class="the-messages">' +
-				'<p>' + messages.text + '</p>' +
-			'</div>');
+				'<p>' + message.text + '</p>' +
+			'</div>'
+		);
 	}
 
 	function waitForMessages() {
 		$.getJSON('/read-messages/' + lastReadMsgTime, function(messages) {
-			onReceiveMessages(messages);
+
+			// Call onReceiveMessage once for every message if there are any.
+			if (messages && messages.length) {
+				messages.forEach(function(msg) {
+					onReceiveMessage(msg);
+					lastReadMsgTime = msg.time;
+				});
+
+				// Update the lastReadMsgTime
+				lastReadMsgTime = messages[messages.length-1].time;
+			}
+
 			// Wait for new messages.
 			waitForMessages();
 		});
