@@ -16,6 +16,8 @@ $(function() {
 
 	function onSendMessage() {
 		var inputMsg = inputTextbox.val();
+		
+		inputTextbox.val('');
 
 		$.post('/send-message',
 			{
@@ -32,6 +34,7 @@ $(function() {
 				'<p>' + message.text + '</p>' +
 			'</div>'
 		);
+		$('body').append($('.spacer'));
 	}
 
 	function waitForMessages() {
