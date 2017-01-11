@@ -9,6 +9,8 @@ $(function() {
 
 	function onSendMessage() {
 		var inputMsg = inputTextbox.val();
+		
+		inputTextbox.val('');
 
 		$.post('/send-message',
 			{
