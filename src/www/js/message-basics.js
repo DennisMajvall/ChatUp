@@ -27,6 +27,7 @@ $(function() {
 				'<p>' + message.text + '</p>' +
 			'</div>'
 		);
+		$('body').append($('.spacer'));
 	}
 
 	function waitForMessages() {
