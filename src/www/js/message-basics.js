@@ -50,8 +50,8 @@ $(function() {
 					onReceiveMessage(msg);
 					lastReadMsgTime = msg.time;
 				});
-
-				window.scrollTo(0, 9999999);
+				
+				messagesDiv.scrollTop(messagesDiv[0].scrollHeight);
 
 				// Update the lastReadMsgTime
 				lastReadMsgTime = messages[messages.length-1].time;
