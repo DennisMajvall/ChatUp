@@ -33,14 +33,14 @@ $(function() {
         messagesDiv.append(
             '<div>' +
                 '<div class="message">' +
-                    getSenderAsHTML(message) +
+                    getSenderAndTimestamp(message) +
                     '<p>' + message.text + '</p>' +
                 '</div>' + 
             '</div>'
         );
     }
 
-    function getSenderAsHTML(message) {
+    function getSenderAndTimestamp(message) {
         if (lastSender === message.sender) {
             return '';
         }
