@@ -45,7 +45,7 @@ $(function() {
             return '';
         }
 
-        return '<p>' + message.sender + ", " + formatTime(message.time) + '</p>';
+        return '<p>' + message.sender + " (" + formatTime(message.time) + ")" + '</p>';
     }
 
     function formatTime(timestamp){
