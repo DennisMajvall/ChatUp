@@ -1,13 +1,38 @@
 .input-area {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-
 	height: 5%;
 	background-color:#FBF5F3;
 	border-top:2px solid #DEE1DA;
 
-	input[name="input"] {
-		width: 40%;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+
+	.username-input-area {
+		display: inline-flex;
+		justify-content: center;
+		margin-right: 20px;
+
+		input[name="text-username"] {
+			min-width: 100px;
+			max-width: 150px;
+		}
+
+		input[name="submit-username"] {
+			width: 80px;
+		}
 	}
+
+	.message-input-area {
+		display: inline-flex;
+		justify-content: center;
+
+		input[name="text-message"] {
+			min-width: 140px;
+		}
+
+		input[name="submit-message"] {
+			width: 60px;
+		}
+	}
+
 }

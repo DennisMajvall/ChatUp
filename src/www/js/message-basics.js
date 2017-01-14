@@ -1,6 +1,6 @@
 $(function() {
-	var sendButton = $('input[name="send-message"]');
-	var inputTextbox = $('input[name="input"]');
+	var sendButton = $('input[name="submit-message"]');
+	var inputTextbox = $('input[name="text-message"]');
 	var messagesDiv = $('.messages');
 	var lastReadMsgTime = 0;
 	var lastSender = "";

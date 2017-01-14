@@ -11,9 +11,9 @@
 	<link href="/fonts/Roboto.css" rel="stylesheet">
 	<script type="text/javascript" src="/js/jquery.js"></script>
 	<script type="text/javascript" src="/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="/js/message-basics.js"></script>
 	<script type="text/javascript" src="/js/cookies.js"></script>
 	<script type="text/javascript" src="/js/create-username.js"></script>
+	<script type="text/javascript" src="/js/message-basics.js"></script>
 
 	<title>ChatUp</title>
 </head>
@@ -31,11 +31,14 @@
 		</div>
 
 		<div class="input-area">
-			<input type="text" name="input" class="form-control">
-			<input type="submit" name="send-message" class="btn btn-default" value="Send">
-
-			<input type="text" name="username-input" class="form-control">
-			<input type="submit" name="submit-username" class="btn btn-default" value="Send">
+			<div class="message-input-area">
+				<input name="text-message" placeholder="Type a message" class="form-control" type="text">
+				<input value="Send" name="submit-message" class="btn btn-default" type="submit">
+			</div>
+			<div class="username-input-area">
+				<input name="text-username" placeholder="Username" maxlength="32" class="form-control" type="text">
+				<input value="Change" name="submit-username" class="btn btn-default" type="submit">
+			</div>
 		</div>
 
 	</div>
