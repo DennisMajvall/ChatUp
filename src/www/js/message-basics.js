@@ -22,13 +22,10 @@ $(function() {
 
 		inputTextbox.val('');
 
-		$.post('/send-message',
-			{
-				'text': inputMsg
-				// we could send more parameters here.
-			},
-			function(messages, error) {
-		}, 'json');
+		$.post('/send-message', {
+			'text': inputMsg
+			// we could send more parameters here.
+		}, null, 'json');
 	}
 
 	function onReceiveMessage(message) {

@@ -118,6 +118,7 @@ function readMessagesRequest(req, res) {
 function msgToJSON(msg) {
 	return {
 		text: msg.text,
+		sender: msg.sender,
 		time: msg.timeReceived
 	};
 }
@@ -135,6 +136,7 @@ function sendMessageToAllListeners(msg) {
 function sendMessageRequest(req, res) {
 	var msg = {
 		text: req.body.text,
+		sender: req.cookies.username || 'Unknown',
 		timeReceived: new Date().getTime()
 	}
 
