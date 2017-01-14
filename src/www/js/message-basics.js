@@ -3,6 +3,7 @@ $(function() {
 	var inputTextbox = $('input[name="input"]');
 	var messagesDiv = $('.messages');
 	var lastReadMsgTime = 0;
+	var lastSender = "";
 
 	waitForMessages();
 
@@ -29,14 +30,23 @@ $(function() {
 	}
 
 	function onReceiveMessage(message) {
-		messagesDiv.append(
-			'<div>' +
-				'<div class="message">' +
-					'<p>' + message.text + '</p>' +
-				'</div>' + 
-			'</div>'
-		);
-	}
+        messagesDiv.append(
+            '<div>' +
+                '<div class="message">' +
+                    getSenderAsHTML(message) +
+                    '<p>' + message.text + '</p>' +
+                '</div>' + 
+            '</div>'
+        );
+    }
+
+    function getSenderAsHTML(message) {
+        if (lastSender === message.sender) {
+            return '';
+        }
+
+        return '<p>' + message.sender + '</p>';
+    }
 
 	function waitForMessages() {
 		$.getJSON('/read-messages/' + lastReadMsgTime, function(messages) {
@@ -45,7 +55,7 @@ $(function() {
 			if (messages && messages.length) {
 				messages.forEach(function(msg) {
 					onReceiveMessage(msg);
-					lastReadMsgTime = msg.time;
+					lastSender = msg.sender;
 				});
 				
 				messagesDiv.scrollTop(messagesDiv[0].scrollHeight);
