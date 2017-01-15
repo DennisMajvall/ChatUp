@@ -1,6 +1,7 @@
 $(function() {
 	var sendButton = $('input[name="submit-message"]');
 	var inputTextbox = $('input[name="text-message"]');
+	var inputSelfdestructTime = $('input[name="time-destruct"]');
 	var messagesDiv = $('.messages');
 	var lastReadMsgTime = 0;
 	var lastSender = "";
@@ -17,14 +18,22 @@ $(function() {
 
 	function onSendMessage() {
 		var inputMsg = inputTextbox.val();
+		var inputSelfdestruct = inputSelfdestructTime.val();
 
 		if (!inputMsg.trim().length)
 			return;
 
+		if (!inputSelfdestruct)
+			inputSelfdestruct = -1;
+		else
+			inputSelfdestruct = inputSelfdestruct * 60 * 1000;
+
 		inputTextbox.val('');
+		inputSelfdestructTime.val('');
 
 		$.post('/send-message', {
-			'text': inputMsg
+			'text': inputMsg,
+			'selfdestruct': inputSelfdestruct
 			// we could send more parameters here.
 		}, null, 'json');
 	}
@@ -38,6 +47,7 @@ $(function() {
                 '</div>' + 
             '</div>'
         );
+    	console.log(message.selfdestruct);
     }
 
     function getSenderAndTimestamp(message) {
