@@ -47,7 +47,6 @@ $(function() {
                 '</div>' + 
             '</div>'
         );
-    	console.log(message.selfdestruct);
     }
 
     function getSenderAndTimestamp(message) {
