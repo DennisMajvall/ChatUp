@@ -6,16 +6,24 @@ body {
 	font-size: 16px;
 	background-color: #FBF5F3;
 
-	.chat-area, .left-panel {
+	.chat-area, .left-panel, .right-panel {
 		height: 100%;
 		float: left;
 	}
 
 	.chat-area {
-		width: 90%;
+		width: 80%;
+
+		&.decreased {
+		width: 70%;
+	}
 	}
 
 	.left-panel {
+		width: 10%;
+	}
+
+	.right-panel {
 		width: 10%;
 	}
 }
