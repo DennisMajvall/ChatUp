@@ -1,21 +1,50 @@
 'use strict';
 
+var channels = { 'general': {} };
+
+var getRoutes = {};
+
+var postRoutes = {
+	'/send-message/': sendMessage,
+	'/add-channel/': addChannel,
+};
+
+var errorChecks = {
+	'/send-message/': sendMessageErrorCheck,
+	'/add-channel/': addChannelErrorCheck,
+};
+
+//  -----   Message functions   -----
+
+function addChannel(msg) {
+	msg.type = 'addChannel';
+	channels[msg.channelName] = {};
+}
+
+function sendMessage(msg) {
+	msg.type = 'chatMsg';
+}
+
+//  -----   Error Check functions   -----
+
+function addChannelErrorCheck(req) {
+	if (req.body.channelName in channels)
+		return 'CHANNEL_NAME_ALREADY_EXISTS';
+}
+
+function sendMessageErrorCheck(req) {
+	if (!req.body.channelName)
+		return 'MISSING_CHANNEL_NAME';
+}
+
+//  -----   Internal functions and variables   -----
+
 var messages = [];
 var listeners = [];
 var timer = null;
 var listenerTimeLimit = 25000;
 
-var get_routes = {
-	'/read-messages/:lastTime': readMessagesRequest
-};
-
-var post_routes = {
-	'/send-message': sendMessageRequest
-};
-
-/*	-----------   Basic explanation   ----------
-		This comment may be removed later.
-
+/*	---  Explanation of internal functions  ---
 	send message:
 		put msg in array of messages
 		send msg to everybody listening
@@ -83,8 +112,8 @@ function sendUnreadMessages(listener) {
 	for (let i = messages.length - 1; i >= 0; --i) {
 		let msg = messages[i];
 
-		if (msg.timeReceived > listener.latestMsgTime) {
-			unreadMessages.push(msgToJSON(msg));
+		if (msg.time > listener.latestMsgTime) {
+			unreadMessages.unshift(msg);
 		} else {
 			break;
 		}
@@ -93,14 +122,14 @@ function sendUnreadMessages(listener) {
 	let timeListened = new Date().getTime() - listener.beginListeningTime;
 
 	if (unreadMessages.length || timeListened > listenerTimeLimit) {
-		listener.res.json(unreadMessages.reverse());
+		listener.res.json(unreadMessages);
 		return true;
 	}
 
 	return false;
 }
 
-function readMessagesRequest(req, res) {
+function readMessages(req, res) {
 	var listener = {
 		res: res,
 		latestMsgTime: req.params.lastTime,
@@ -113,46 +142,47 @@ function readMessagesRequest(req, res) {
 		listeners.push(listener);
 		updateListeners();
 	}
-}
 
-function msgToJSON(msg) {
-	return {
-		text: msg.text,
-		selfdestruct: msg.selfdestruct,
-		sender: msg.sender,
-		time: msg.timeReceived
-	};
+	return true;
 }
 
 function sendMessageToAllListeners(msg) {
-	let jsonMsg = msgToJSON(msg);
-
 	for (let i = 0; i < listeners.length; ++i) {
-		listeners[i].res.json(jsonMsg);
+		listeners[i].res.json(msg);
 	}
-
 	listeners = [];
 }
 
-function sendMessageRequest(req, res) {
-	var msg = {
-		text: req.body.text,
-		selfdestruct: req.body.selfdestruct,
-		sender: req.cookies.username || 'Unknown',
-		timeReceived: new Date().getTime()
-	}
-
-	res.json({ sendMessageRequest:"OK" });
-
-	messages.push(msg);
-	sendMessageToAllListeners(msg);
-}
-
 module.exports = function(app) {
-	for (var name in get_routes) {
-		app.get(name, get_routes[name]);
+	function handleMessage(functionArray, name, req, res) {
+		let msg = req.body;
+		msg.time = new Date().getTime();
+		msg.sender = req.cookies.username || 'Unknown';
+
+		let errorMessage = name in errorChecks && errorChecks[name](req);
+
+		if(errorMessage){
+			res.json({ ERROR: errorMessage });
+		} else {
+			if (!functionArray[name](msg)) {
+				res.json({});
+				messages.push(msg);
+				sendMessageToAllListeners(msg);
+			}
+		}
 	}
-	for (var name in post_routes) {
-		app.post(name, post_routes[name]);
+
+	for (let name in getRoutes) {
+		app.get(name, function(req, res) {
+			handleMessage(getRoutes, name, req, res);
+		});
 	}
+
+	for (let name in postRoutes) {
+		app.post(name, function(req, res) {
+			handleMessage(postRoutes, name, req, res);
+		});
+	}
+
+	app.get('/read-messages/:lastTime', readMessages);
 }
