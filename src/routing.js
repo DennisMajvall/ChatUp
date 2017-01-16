@@ -2,16 +2,22 @@
 
 var channels = { 'general': {} };
 
-var getRoutes = {};
-
-var postRoutes = {
-	'/send-message/': sendMessage,
-	'/add-channel/': addChannel,
-};
-
-var errorChecks = {
-	'/send-message/': sendMessageErrorCheck,
-	'/add-channel/': addChannelErrorCheck,
+var routes = {
+	/*
+	'/example-route-two/': {
+		func: exampleDoStuff,
+		errFunc: exampleDoStuffErrorCheck,	// optional
+		method: 'POST' 						// optionally 'GET' (default: 'POST')
+	},
+	*/
+	'/send-message/': {
+		func: sendMessage,
+		errFunc: sendMessageErrorCheck
+	},
+	'/add-channel/': {
+		func: addChannel,
+		errFunc: addChannelErrorCheck
+	}
 };
 
 //  -----   Message functions   -----
@@ -153,34 +159,38 @@ function sendMessageToAllListeners(msg) {
 	listeners = [];
 }
 
+function passAlongMessage(msg, res) {
+	res.json({});
+	messages.push(msg);
+	sendMessageToAllListeners(msg);
+}
+
 module.exports = function(app) {
-	function handleMessage(functionArray, name, req, res) {
+	function handleMessage(route, req, res) {
 		let msg = req.body;
+
 		msg.time = new Date().getTime();
 		msg.sender = req.cookies.username || 'Unknown';
 
-		let errorMessage = name in errorChecks && errorChecks[name](req);
+		let errorMessage = route.errFunc && route.errFunc(req);
 
-		if(errorMessage){
+		if(errorMessage) {
 			res.json({ ERROR: errorMessage });
 		} else {
-			if (!functionArray[name](msg)) {
-				res.json({});
-				messages.push(msg);
-				sendMessageToAllListeners(msg);
-			}
+			route.func(msg);
+			passAlongMessage(msg, res);
 		}
 	}
 
-	for (let name in getRoutes) {
-		app.get(name, function(req, res) {
-			handleMessage(getRoutes, name, req, res);
-		});
-	}
+	for (let name in routes) {
+		let route = routes[name];
+		let method = 'post';
 
-	for (let name in postRoutes) {
-		app.post(name, function(req, res) {
-			handleMessage(postRoutes, name, req, res);
+		if (route.method && route.method.toUpperCase() == 'GET')
+			method = app.get;
+
+		app[method](name, function(req, res) {
+			handleMessage(route, req, res);
 		});
 	}
 
