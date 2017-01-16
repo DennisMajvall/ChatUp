@@ -7,12 +7,9 @@ $(document).ready(function() {
     });
 
     $('.left-panel').on('mouseleave', function(e) {
-        setTimeout(function() {
         console.log('hejdå');
             $('.left-panel').removeClass('expanded');    
             $('.chat-area').removeClass('decreased');
             $('.right-panel').removeClass('decreased');
-
-        }, 300);
     });
 });
