@@ -1,6 +1,6 @@
 'use strict';
 
-var channels = { 'general': {} };
+var channels = {};
 
 var routes = {
 	/*
