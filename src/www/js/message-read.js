@@ -1,10 +1,11 @@
 $(function() {
 	var messagesDiv = $('.messages');
-	var lastSender = "";
+	var lastSenderInChannel = {};
 
 	messageHandlerFunctions['chatMsg'] = handleChatMessage;
 
 	function receiveMessage(message) {
+		var parentDiv = getChannelMessagesDiv(message.channelName);
 		var newMsg = $(
 			'<div>' +
 				'<div class="message">' +
@@ -12,7 +13,7 @@ $(function() {
 					'<p>' + message.text + '</p>' +
 				'</div>' +
 			'</div>'
-		).appendTo(messagesDiv);
+		).appendTo(parentDiv);
 
 		if (message.selfdestruct > 0) {
 			setTimeout(function() {
@@ -22,15 +23,15 @@ $(function() {
 	}
 
 	function getSenderAndTimestamp(message) {
-		if (lastSender !== message.sender)
+		if (lastSenderInChannel[message.channelName] !== message.sender)
 			return '<p>' + message.sender + ' (' + formatTime(message.time) + ')' + '</p>';
 
 		return '';
 	}
 
-	function handleChatMessage(msg) {
-		receiveMessage(msg);
-		lastSender = msg.sender;
+	function handleChatMessage(message) {
+		receiveMessage(message);
+		lastSenderInChannel[message.channelName] = message.sender;
 		messagesDiv.scrollTop(messagesDiv[0].scrollHeight);
 	}
 });
