@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(function() {
     $('.right-panel').on('mouseenter', function(e) {
         $('.right-panel').addClass('expanded');
         $('.chat-area').addClass('decreased');

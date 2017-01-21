@@ -7,7 +7,6 @@ $(function() {
 	var channelsDiv = $('.channel-names').eq(0);
 	var messagesDiv = $('.messages').eq(0);
 	var channelNames = [];
-	var createChannelArea = $('.create-channel-area').eq(0);
 	var channels = { /*left, center */};
 
 	initializeChannels();
@@ -30,8 +29,17 @@ $(function() {
 	}
 
 	function initializeAddChannel() {
-		var sendButton = $('input[name="create-channel-button"]');
-		var inputTextbox = $('input[name="create-channel-input"]');
+		// create-channel floating box
+		var createChannelArea = $('.create-channel-area').eq(0);
+
+		$('.create-channel-button').on('click', function() {
+			createChannelArea.css({ top: event.pageY, left: event.pageX });
+			createChannelArea.toggle();
+		});
+
+		// create-channel input
+		var sendButton = $('input[name="create-channel-button"]').eq(0);
+		var inputTextbox = $('input[name="create-channel-input"]').eq(0);
 
 		sendButton.on('click', createNewChannel);
 
@@ -137,15 +145,4 @@ $(function() {
 			callback();
 		});
 	}
-
-	function showCreateChannelArea() {
-		$('.create-channel-button').on('click', function() {
-			createChannelArea.css({ top: event.pageY, left: event.pageX });
-			createChannelArea.toggle();
-		});
-	}
-
-	showCreateChannelArea();
-
-
 });
