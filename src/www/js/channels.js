@@ -9,6 +9,7 @@ $(function() {
 	var channels = { /*left, center */};
 
 	initializeChannels();
+	initializeAddChannel();
 
 	function initializeChannels() {
 		getChannels(function() {
@@ -26,6 +27,34 @@ $(function() {
 		};
 	}
 
+	function initializeAddChannel() {
+		var sendButton = $('input[name="create-channel-button"]');
+		var inputTextbox = $('input[name="create-channel-input"]');
+
+		sendButton.on('click', createNewChannel);
+
+		inputTextbox.keyup(function(event){
+			if(event.keyCode == 13){
+				createNewChannel();
+			}
+		});
+
+		$('create-channel-area').on('click', 'create-channel-input', function() {
+			setChannel($(this).text());
+		});
+
+		function createNewChannel() {
+			var channelName = inputTextbox.val();
+
+			inputTextbox.val('');
+
+			if (!channelName.trim().length)
+				return;
+
+			setChannel(channelName);
+		}
+	}
+
 	function getChannelCenter(channelName) {
 		if (!(channelName in channels)) {
 			addChannelToClientAndServer(channelName);
@@ -39,7 +68,7 @@ $(function() {
 			addChannelToClientAndServer(channelName);
 		}
 
-		if (currentChannel != channelName) {
+		if (channelName in channels && currentChannel != channelName) {
 			currentChannel = channelName;
 			localStorage.setItem('lastOpenChannel', channelName);
 			animateChannelSwitch(channelName);
