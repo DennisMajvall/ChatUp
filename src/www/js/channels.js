@@ -2,23 +2,20 @@ var currentChannel = '';
 var getChannelMessagesDiv = null;
 
 $(function() {
-	getChannelMessagesDiv = addChannelToClient;
+	getChannelMessagesDiv = getChannelCenter;
 	var channelTitle = $('.app-title h1').eq(0);
 	var channelsDiv = $('.channel-names').eq(0);
 	var messagesDiv = $('.messages').eq(0);
 	var channelNames = [];
 	var createChannelArea = $('.create-channel-area').eq(0);
+	var channels = { /*left, center */};
 
 	initializeChannels();
+	initializeAddChannel();
 
 	function initializeChannels() {
 		getChannels(function() {
-			var selectedChannel = localStorage.getItem('lastOpenChannel') || '#general';
-
-			if (!channelNames)
-				addChannelToClient(selectedChannel, true);
-
-			setChannel(selectedChannel);
+			setChannel(localStorage.getItem('lastOpenChannel') || '#general');
 			startReadingMessages();
 		});
 
@@ -26,65 +23,108 @@ $(function() {
 		channelsDiv.on('click', 'p', function() {
 			setChannel($(this).text());
 		});
+
 		messageHandlerFunctions['addChannel'] = function(msg) {
-			addChannelToClient(msg.channelName, true);
+			addChannelToClient(msg.channelName);
 		};
 	}
 
-	function animateChannelSwitch(channelName) {
-		channelTitle.hide().text(channelName).fadeIn();
+	function initializeAddChannel() {
+		var sendButton = $('input[name="create-channel-button"]');
+		var inputTextbox = $('input[name="create-channel-input"]');
 
-		messagesDiv.children('.channel-messages').hide();
-		messagesDiv.children('.channel-messages[name="' + channelName + '"]').show();
+		sendButton.on('click', createNewChannel);
 
-		channelsDiv.find('p').removeClass('selected');
-		channelsDiv.find('p[name="' + channelName + '"]').addClass('selected');
+		inputTextbox.keyup(function(event){
+			if(event.keyCode == 13){
+				createNewChannel();
+			}
+		});
+
+		$('create-channel-area').on('click', 'create-channel-input', function() {
+			setChannel($(this).text());
+		});
+
+		function createNewChannel() {
+			var channelName = inputTextbox.val();
+
+			inputTextbox.val('');
+
+			if (!channelName.trim().length)
+				return;
+
+			setChannel(channelName);
+		}
+	}
+
+	function getChannelCenter(channelName) {
+		if (!(channelName in channels)) {
+			addChannelToClientAndServer(channelName);
+		}
+
+		return channels[channelName].center;
 	}
 
 	function setChannel(channelName) {
-		if (currentChannel != channelName) {
+		if (!(channelName in channels)) {
+			addChannelToClientAndServer(channelName);
+		}
+
+		if (channelName in channels && currentChannel != channelName) {
 			currentChannel = channelName;
 			localStorage.setItem('lastOpenChannel', channelName);
 			animateChannelSwitch(channelName);
 		}
 	}
 
-	function getOrAddChannelMessagesDiv(channelName, calledByServer) {
-		var channelDivs = messagesDiv.children('div[name="' + channelName + '"]');
-		if (channelDivs.length == 0) {
-			if (!calledByServer) {
-				addChannelToServer(channelName, true);
-			}
-			return $('<div>').addClass('channel-messages').attr('name', channelName).hide().appendTo(messagesDiv);
-		}
+	function animateChannelSwitch(channelName) {
+		channelTitle.hide().text(channelName).fadeIn();
 
-		return channelDivs.eq(0);
+		messagesDiv.children('.channel-messages').hide();
+		channels[channelName].center.show();
+
+		channelsDiv.find('p').removeClass('selected');
+		channels[channelName].left.addClass('selected');
 	}
 
-	function addChannelToClient(channelName, calledByServer) {
-		if (channelNames.indexOf(channelName) === -1) {
-			channelNames.push(channelName);
-			var pTag = $('<p>' + channelName + '</p>').attr('name', channelName).hide().fadeIn().appendTo(channelsDiv);
-		}
-
-		let result = getOrAddChannelMessagesDiv(channelName, calledByServer);
-
-		if (!currentChannel)
-			setChannel(channelName);
-
-		return result;
+	function createLeftPanelChannel(channelName) {
+		return $('<p>' + channelName + '</p>')
+			.attr('name', channelName)
+			.hide()
+			.fadeIn()
+			.appendTo(channelsDiv);
 	}
 
-	function addChannelToServer(channelName, ignoreErrors, onSuccessCallback) {
+	function createCenterPanelChannel(channelName) {
+		return $('<div>')
+			.addClass('channel-messages')
+			.attr('name', channelName)
+			.hide()
+			.appendTo(messagesDiv);
+	}
+
+	function addChannelToClientAndServer(channelName) {
+		addChannelToClient(channelName);
+		addChannelToServer(channelName);
+	}
+
+	function addChannelToClient(channelName) {
+		if (!(channelName in channels)) {
+			channels[channelName] = {
+				'left': createLeftPanelChannel(channelName),
+				'center': createCenterPanelChannel(channelName)
+			};
+		}
+	}
+
+	function addChannelToServer(channelName) {
+		let showErrors = false;
+
 		$.post('/add-channel/', {
 			channelName: channelName
 		}, function(msgResponse) {
-			if ('ERROR' in msgResponse) {
-				if (!ignoreErrors) {
-					console.log('addChannel:', channelName, 'error:', msgResponse.ERROR)
-				}
-			} else if(onSuccessCallback) {
-				onSuccessCallback();
+			if (showErrors && 'ERROR' in msgResponse) {
+				console.log('addChannel:', channelName, 'error:', msgResponse.ERROR)
 			}
 		});
 	}
@@ -92,7 +132,7 @@ $(function() {
 	function getChannels(callback) {
 		$.post('/get-channels/', function(msgResponse) {
 			for (let name in msgResponse.channels) {
-				addChannelToClient(name, true);
+				addChannelToClient(name);
 			}
 			callback();
 		});

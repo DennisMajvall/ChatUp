@@ -15,12 +15,12 @@ $(function() {
 		var inputMsg = inputTextbox.val();
 		var inputSelfdestruct = inputSelfdestructTime.val() || 0;
 
+		inputTextbox.val('');
+
 		if (!inputMsg.trim().length)
 			return;
 
 		inputSelfdestruct *= 60 * 1000;
-
-		inputTextbox.val('');
 		inputSelfdestructTime.val('');
 
 		$.post('/send-message/', {
