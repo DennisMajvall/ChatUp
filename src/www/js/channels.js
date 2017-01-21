@@ -35,7 +35,21 @@ $(function() {
 		$('.create-channel-button').on('click', function(event) {
 			createChannelArea.css({ top: event.pageY, left: event.pageX });
 			createChannelArea.toggle();
+
+			if (createChannelArea.is(':visible')) {
+				$('body').on('click', onBodyClick);
+			} else {
+				$('body').off('click', onBodyClick);
+			}
+
+			return false;
 		});
+
+		function onBodyClick(event) {
+			createChannelArea.hide();
+			$('body').off('click', onBodyClick);
+			return false;
+		}
 
 		// create-channel input
 		var sendButton = $('input[name="create-channel-button"]').eq(0);
