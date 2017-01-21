@@ -7,6 +7,7 @@ $(function() {
 	var channelsDiv = $('.channel-names').eq(0);
 	var messagesDiv = $('.messages').eq(0);
 	var channelNames = [];
+	var createChannelArea = $('.create-channel-area').eq(0);
 
 	initializeChannels();
 
@@ -96,4 +97,15 @@ $(function() {
 			callback();
 		});
 	}
+
+	function showCreateChannelArea() {
+		$('.create-channel-button').on('click', function() {
+			createChannelArea.css({ top: event.pageY, left: event.pageX });
+			createChannelArea.toggle();
+		});
+	}
+
+	showCreateChannelArea();
+
+
 });
