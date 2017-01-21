@@ -46,9 +46,11 @@ $(function() {
 		});
 
 		function onBodyClick(event) {
-			createChannelArea.hide();
-			$('body').off('click', onBodyClick);
-			return false;
+			if (!$(event.target.parentElement).hasClass('create-channel-area')) {
+				createChannelArea.hide();
+				$('body').off('click', onBodyClick);
+				return false;
+			}
 		}
 
 		// create-channel input

@@ -16,9 +16,11 @@ $(function() {
 	}
 
 	function onBodyClick(event) {
-		addMembersArea.hide();
-		$('body').off('click', onBodyClick);
-		return false;
+		if (!$(event.target.parentElement).hasClass('add-members-area')) {
+			addMembersArea.hide();
+			$('body').off('click', onBodyClick);
+			return false;
+		}
 	}
 
 	function addMembers() {
