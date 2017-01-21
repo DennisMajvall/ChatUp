@@ -32,7 +32,7 @@ $(function() {
 		// create-channel floating box
 		var createChannelArea = $('.create-channel-area').eq(0);
 
-		$('.create-channel-button').on('click', function() {
+		$('.create-channel-button').on('click', function(event) {
 			createChannelArea.css({ top: event.pageY, left: event.pageX });
 			createChannelArea.toggle();
 		});
