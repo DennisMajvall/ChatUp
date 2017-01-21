@@ -7,7 +7,9 @@ var routes = {
 	'/example-route-two/': {
 		func: exampleDoStuff,
 		errFunc: exampleDoStuffErrorCheck,	// optional
-		method: 'POST' 						// optionally 'GET' (default: 'POST')
+		method: 'POST' 		// optionally 'GET' (default: 'POST'),
+		passAlong: bool 	// optional, The msg shall be sent to listeners, (default: true)
+								false = the msg will be the response (if no error)) 
 	},
 	*/
 	'/send-message/': {

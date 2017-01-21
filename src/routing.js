@@ -135,7 +135,11 @@ module.exports = function(app) {
 			res.json({ ERROR: errorMessage });
 		} else {
 			route.func(msg);
-			passAlongMessage(msg, res);
+			if (route.passAlong === undefined || route.passAlong === true) {
+				passAlongMessage(msg, res);
+			} else {
+				res.json(msg);
+			}
 		}
 	}
 
