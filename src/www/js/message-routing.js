@@ -1,9 +1,10 @@
 var messageHandlerFunctions = {};
+var startReadingMessages = null;
 
 $(function() {
 	var lastReadMsgTime = 0;
-	
-	waitForMessages();
+
+	startReadingMessages = waitForMessages;
 
 	function handleMessageType(msg){
 		if (msg.type in messageHandlerFunctions) {
@@ -14,6 +15,9 @@ $(function() {
 	}
 
 	function waitForMessages() {
+		// To ensure nobody outside of this scope calls this function again.
+		startReadingMessages = null;
+
 		$.getJSON('/read-messages/' + lastReadMsgTime, function(messages) {
 			if (messages && messages.length) {
 				messages.forEach(handleMessageType);

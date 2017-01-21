@@ -19,6 +19,10 @@ var routes = {
 	'/add-channel/': {
 		func: addChannel,
 		errFunc: addChannelErrorCheck
+	},
+	'/get-channels/': {
+		func: getChannels,
+		passAlong: false
 	}
 };
 
@@ -31,6 +35,10 @@ function addChannel(msg) {
 
 function sendMessage(msg) {
 	msg.type = 'chatMsg';
+}
+
+function getChannels(msg) {
+	msg.channels = channels;
 }
 
 //  -----   Error Check functions   -----

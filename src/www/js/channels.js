@@ -11,6 +11,16 @@ $(function() {
 	initializeChannels();
 
 	function initializeChannels() {
+		getChannels(function() {
+			var selectedChannel = localStorage.getItem('lastOpenChannel') || '#general';
+
+			if (!channelNames)
+				addChannelToClient(selectedChannel, true);
+
+			setChannel(selectedChannel);
+			startReadingMessages();
+		});
+
 		// Add Event listeners
 		channelsDiv.on('click', 'p', function() {
 			setChannel($(this).text());
@@ -18,10 +28,6 @@ $(function() {
 		messageHandlerFunctions['addChannel'] = function(msg) {
 			addChannelToClient(msg.channelName, true);
 		};
-
-		// Set selected channel
-		let selectedChannel = localStorage.getItem('lastOpenChannel') || '#general';
-		addChannelToClient(selectedChannel, false);
 	}
 
 	function animateChannelSwitch(channelName) {
@@ -48,7 +54,7 @@ $(function() {
 			if (!calledByServer) {
 				addChannelToServer(channelName, true);
 			}
-			return $('<div>').addClass('channel-messages').attr('name', channelName).appendTo(messagesDiv);
+			return $('<div>').addClass('channel-messages').attr('name', channelName).hide().appendTo(messagesDiv);
 		}
 
 		return channelDivs.eq(0);
@@ -58,12 +64,14 @@ $(function() {
 		if (channelNames.indexOf(channelName) === -1) {
 			channelNames.push(channelName);
 			var pTag = $('<p>' + channelName + '</p>').attr('name', channelName).hide().fadeIn().appendTo(channelsDiv);
-
-			if (!currentChannel)
-				setChannel(channelName, pTag);
 		}
 
-		return getOrAddChannelMessagesDiv(channelName, calledByServer);
+		let result = getOrAddChannelMessagesDiv(channelName, calledByServer);
+
+		if (!currentChannel)
+			setChannel(channelName);
+
+		return result;
 	}
 
 	function addChannelToServer(channelName, ignoreErrors, onSuccessCallback) {
@@ -77,6 +85,15 @@ $(function() {
 			} else if(onSuccessCallback) {
 				onSuccessCallback();
 			}
+		});
+	}
+
+	function getChannels(callback) {
+		$.post('/get-channels/', function(msgResponse) {
+			for (let name in msgResponse.channels) {
+				addChannelToClient(name, true);
+			}
+			callback();
 		});
 	}
 });
