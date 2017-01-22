@@ -6,6 +6,10 @@ body {
 	font-size: 16px;
 	background-color: #FFFEFD;
 
+	tooltip {
+		display: none;
+		position: absolute;
+	}
 
 	.chat-area, .left-panel, .right-panel {
 		height: 100%;
@@ -14,18 +18,14 @@ body {
 
 	.chat-area {
 		width: 80%;
-
-		&.decreased {
-			width: 80%;
-		}
 	}
 
-	.left-panel {
+	.left-panel, .right-panel {
 		width: 10%;
-	}
+		overflow: hidden;
 
-	.right-panel {
-		width: 10%;
+		&.expanded { width: 15%; }
+		&.decreased { width: 5%; }
 	}
 
 	.glyphicon {

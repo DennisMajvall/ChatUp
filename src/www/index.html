@@ -18,9 +18,9 @@
 	<script type="text/javascript" src="/js/create-username.js"></script>
 	<script type="text/javascript" src="/js/message-send.js"></script>
 	<script type="text/javascript" src="/js/message-read.js"></script>
-	<script type="text/javascript" src="/js/left-slide.js"></script>
-	<script type="text/javascript" src="/js/right-slide.js"></script>
+	<script type="text/javascript" src="/js/slide-panels.js"></script>
 	<script type="text/javascript" src="/js/add-members.js"></script>
+	<script type="text/javascript" src="/js/tooltip.js"></script>
 	<title>ChatUp</title>
 </head>
 <body>
@@ -32,12 +32,12 @@
 
 		<div class="channel-names">
 		</div>
-		<div class="create-channel-button">
-			<span class="glyphicon glyphicon-plus-sign">
+		<div>
+			<span tooltip-target="create-channel-tooltip" class="glyphicon glyphicon-plus-sign"></span>
 		</div>
-		<div class="create-channel-area">
+		<tooltip id="create-channel-tooltip">
 			<input type="text" name="create-channel-input" class="form-control" placeholder="Channel name">
-		</div>
+		</tooltip>
 	</div>
 
 	<div class="chat-area">
@@ -66,15 +66,15 @@
 	<div class="right-panel">
 		<div class="right-panel-title">
 			<h3>Members</h3>
-			<div class="add-members-button">
-				<span class="glyphicon glyphicon-plus-sign"></span>
+			<div>
+				<span tooltip-target="add-members-tooltip" class="glyphicon glyphicon-plus-sign"></span>
 			</div>
 		</div>
 
-		<div class="add-members-area panel panel-default">
+		<tooltip id="add-members-tooltip" class="panel panel-default">
 			<div class="panel-body">
 			</div>
-		</div>
+		</tooltip>
 	</div>
 
 </body>
