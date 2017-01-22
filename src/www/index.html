@@ -21,17 +21,27 @@
 	<script type="text/javascript" src="/js/slide-panels.js"></script>
 	<script type="text/javascript" src="/js/add-members.js"></script>
 	<script type="text/javascript" src="/js/tooltip.js"></script>
+	<script type="text/javascript" src="/js/toggle-emojis.js"></script>
 	<title>ChatUp</title>
 </head>
 <body>
 
 	<div class="left-panel">
-		<div class="settings-button">
-			<span class="glyphicon glyphicon-cog"></span>
+
+		<div>
+			<span tooltip-target="settings-tooltip" class="glyphicon glyphicon-cog"></span>
 		</div>
+
+		<tooltip id="settings-tooltip" class="panel panel-default">
+			<div class="panel-body">
+				<div class="on-off-emojis">
+				</div>
+			</div>
+		</tooltip>
 
 		<div class="channel-names">
 		</div>
+
 		<div>
 			<span tooltip-target="create-channel-tooltip" class="glyphicon glyphicon-plus-sign"></span>
 		</div>

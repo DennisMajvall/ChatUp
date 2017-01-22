@@ -55,13 +55,15 @@ $(function() {
 	}
 
 	function decipherEmojis(message) {
-	    for (var emoji in emojis) {
-	        let index = message.indexOf(emoji);
+		if (settings.useEmojis) {
+		    for (var emoji in emojis) {
+		        let index = message.indexOf(emoji);
 
-	        if (index !== -1) {
-	            message = message.substr(0, index) + emojis[emoji] + message.substr(index + emoji.length);
-	        }
-	    }
+		        if (index !== -1) {
+		            message = message.substr(0, index) + emojis[emoji] + message.substr(index + emoji.length);
+		        }
+		    }
+	   	}
 
 	    return message;
 	}
