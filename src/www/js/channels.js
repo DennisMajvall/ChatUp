@@ -29,44 +29,13 @@ $(function() {
 	}
 
 	function initializeAddChannel() {
-		// create-channel floating box
-		var createChannelArea = $('.create-channel-area').eq(0);
-
-		$('.create-channel-button').on('click', function(event) {
-			createChannelArea.css({ top: event.pageY, left: event.pageX });
-			createChannelArea.toggle();
-
-			if (createChannelArea.is(':visible')) {
-				$('body').on('click', onBodyClick);
-			} else {
-				$('body').off('click', onBodyClick);
-			}
-
-			return false;
-		});
-
-		function onBodyClick(event) {
-			if (!$(event.target.parentElement).hasClass('create-channel-area')) {
-				createChannelArea.hide();
-				$('body').off('click', onBodyClick);
-				return false;
-			}
-		}
-
-		// create-channel input
-		var sendButton = $('input[name="create-channel-button"]').eq(0);
+		var createChannelTooltip = $('#create-channel-tooltip');
 		var inputTextbox = $('input[name="create-channel-input"]').eq(0);
-
-		sendButton.on('click', createNewChannel);
 
 		inputTextbox.keyup(function(event){
 			if(event.keyCode == 13){
 				createNewChannel();
 			}
-		});
-
-		$('create-channel-area').on('click', 'create-channel-input', function() {
-			setChannel($(this).text());
 		});
 
 		function createNewChannel() {
@@ -78,6 +47,7 @@ $(function() {
 				return;
 
 			setChannel(channelName);
+			$('body').trigger('click');
 		}
 	}
 
